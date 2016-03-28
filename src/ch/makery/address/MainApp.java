@@ -13,6 +13,7 @@ import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.BorderPane;
 import javafx.stage.Stage;
 
+
 public class MainApp extends Application {
 
     private Stage primaryStage;
@@ -77,14 +78,6 @@ public class MainApp extends Application {
      * Mostra o person overview dentro do root layout.
      */
 
-    /**
-     * Retorna o palco principal.
-     * @return
-     */
-    public Stage getPrimaryStage() {
-        return primaryStage;
-    }
-    
     public void showPersonOverview() {
     	public void showPersonOverview() {
     	    try {
@@ -105,9 +98,51 @@ public class MainApp extends Application {
     	    }
     	}
     }
+    
+    
+    public boolean showPersonEditDialog(Person person) {
+        try {
+            // Carrega o arquivo fxml e cria um novo stage para a janela popup.
+            FXMLLoader loader = new FXMLLoader();
+            loader.setLocation(MainApp.class.getResource("view/PersonEditDialog.fxml"));
+            AnchorPane page = (AnchorPane) loader.load();
 
+            // Cria o palco dialogStage.
+            Stage dialogStage = new Stage();
+            dialogStage.setTitle("Edit Person");
+            dialogStage.initModality(Modality.WINDOW_MODAL);
+            dialogStage.initOwner(primaryStage);
+            Scene scene = new Scene(page);
+            dialogStage.setScene(scene);
+
+            // Define a pessoa no controller.
+            PersonEditDialogController controller = loader.getController();
+            controller.setDialogStage(dialogStage);
+            controller.setPerson(person);
+
+            // Mostra a janela e espera até o usuário fechar.
+            dialogStage.showAndWait();
+
+            return controller.isOkClicked();
+        } catch (IOException e) {
+            e.printStackTrace();
+            return false;
+        }
+    }
+    
+
+    /**
+     * Retorna o palco principal.
+     * @return
+     */
+    public Stage getPrimaryStage() {
+        return primaryStage;
+    }
+    
+ 
 
     public static void main(String[] args) {
         launch(args);
+        
     }
 }
